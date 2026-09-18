@@ -3,6 +3,7 @@ package ir.maktabsharif147.jdbc;
 import ir.maktabsharif147.jdbc.domains.City;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class JdbcApplication {
 
@@ -15,16 +16,61 @@ public class JdbcApplication {
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
             System.out.println("connected to database");
             createSchema(connection, schemaName);
-            createCityTable(connection);
-            insertCityInstanceIfCountIsZero(connection);
-            selectAllCitiesAndPrintThem(connection);
-            City city = new City();
-            city.setId(1L);
-            city.setName("Tehran");
-            updateCity(connection, city);
-            deleteCity(connection, 3L);
+//            createCityTable(connection);
+//            insertCityInstanceIfCountIsZero(connection);
+//            selectAllCitiesAndPrintThem(connection);
+//            City city = new City();
+//            city.setId(1L);
+//            city.setName("Tehran");
+//            updateCity(connection, city);
+//            deleteCity(connection, 3L);
+
+
+//            printCityById(connection);
+
+            String sql = "select * from tb_city where id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, 1L);
+                ResultSet resultSet = statement.executeQuery();
+                resultSet.next();
+                System.out.println(resultSet.getString(2));
+
+                statement.setLong(1, 2L);
+                resultSet = statement.executeQuery();
+                resultSet.next();
+                System.out.println(resultSet.getString(2));
+            }
+
         }
 
+    }
+
+    private static void printCityById(Connection connection) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        String param = scanner.nextLine();
+//        printCityByIdByStatement(connection, param);
+        printCityByIdByPreparedStatement(connection, param);
+    }
+
+    private static void printCityByIdByStatement(Connection connection, String param) throws SQLException {
+        String sql = "SELECT * FROM TB_CITY WHERE id = " + param;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(2));
+            }
+        }
+    }
+
+    private static void printCityByIdByPreparedStatement(Connection connection, String param) throws SQLException {
+        String sql = "SELECT * FROM TB_CITY WHERE name = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, param);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(2));
+            }
+        }
     }
 
     private static void createSchema(Connection connection, String schemaName) throws SQLException {
