@@ -3,6 +3,7 @@ package ir.maktabsharif147.jdbc;
 import ir.maktabsharif147.jdbc.domains.City;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class JdbcApplication {
@@ -28,21 +29,56 @@ public class JdbcApplication {
 
 //            printCityById(connection);
 
-            String sql = "select * from tb_city where id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, 1L);
-                ResultSet resultSet = statement.executeQuery();
-                resultSet.next();
-                System.out.println(resultSet.getString(2));
-
-                statement.setLong(1, 2L);
-                resultSet = statement.executeQuery();
-                resultSet.next();
-                System.out.println(resultSet.getString(2));
-            }
+//            insertBatchByStatement(connection);
+//            insertBatchByPreparedStatement(connection);
+            City byId = findById(connection, 1L);
+            System.out.println(byId);
+            System.out.println(findById(connection, 10L));
 
         }
 
+    }
+
+    private static void insertBatchByStatement(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            statement.addBatch("INSERT INTO TB_CITY (ID, NAME) VALUES (3, '3')");
+            statement.addBatch("INSERT INTO TB_CITY (ID, NAME) VALUES (4, '4')");
+            statement.addBatch("INSERT INTO TB_CITY (ID, NAME) VALUES (5, '5')");
+            int[] ints = statement.executeBatch();
+            System.out.println(Arrays.toString(ints));
+        }
+    }
+
+    private static void insertBatchByPreparedStatement(Connection connection) throws SQLException {
+        String insertQuery = "INSERT INTO TB_CITY (ID, NAME) VALUES (?, ?)";
+
+
+        try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+//            INSERT INTO TB_CITY (ID, NAME) VALUES (?, ?)
+            statement.setLong(1, 6L);
+//            INSERT INTO TB_CITY (ID, NAME) VALUES (6, ?)
+            statement.setString(2, "6");
+//            insert into tb_city (id, name) values (6, '6');
+            statement.addBatch();
+
+//            INSERT INTO TB_CITY (ID, NAME) VALUES (?, ?)
+            statement.setLong(1, 7L);
+//            INSERT INTO TB_CITY (ID, NAME) VALUES (7, ?)
+            statement.setString(2, "7");
+//            insert into tb_city (id, name) values (7, '7');
+            statement.addBatch();
+
+            statement.setLong(1, 8L);
+            statement.setString(2, "8");
+            statement.addBatch();
+
+            statement.setLong(1, 9L);
+            statement.setString(2, "9");
+            statement.addBatch();
+
+            int[] ints = statement.executeBatch();
+            System.out.println(Arrays.toString(ints));
+        }
     }
 
     private static void printCityById(Connection connection) throws SQLException {
@@ -137,5 +173,20 @@ public class JdbcApplication {
             String deleteQuery = "DELETE FROM TB_CITY WHERE ID = " + cityId;
             statement.executeUpdate(deleteQuery);
         }
+    }
+
+    private static City findById(Connection connection, Long id) throws SQLException {
+        City city = null;
+        String sql = "select * from tb_city where id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                city = new City();
+                city.setId(resultSet.getLong(1));
+                city.setName(resultSet.getString(2));
+            }
+        }
+        return city;
     }
 }
