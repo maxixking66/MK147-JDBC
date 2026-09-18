@@ -1,5 +1,7 @@
 package ir.maktabsharif147.jdbc;
 
+import ir.maktabsharif147.jdbc.domains.City;
+
 import java.sql.*;
 
 public class JdbcApplication {
@@ -16,6 +18,11 @@ public class JdbcApplication {
             createCityTable(connection);
             insertCityInstanceIfCountIsZero(connection);
             selectAllCitiesAndPrintThem(connection);
+            City city = new City();
+            city.setId(1L);
+            city.setName("Tehran");
+            updateCity(connection, city);
+            deleteCity(connection, 3L);
         }
 
     }
@@ -69,6 +76,20 @@ public class JdbcApplication {
                 System.out.printf("city row: %d, id: %d, name: %s", rs.getRow(), id, name);
                 System.out.println();
             }
+        }
+    }
+
+    private static void updateCity(Connection connection, City city) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            String updateQuery = "UPDATE TB_CITY SET NAME = '" + city.getName() + "' WHERE ID = " + city.getId();
+            statement.executeUpdate(updateQuery);
+        }
+    }
+
+    private static void deleteCity(Connection connection, Long cityId) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            String deleteQuery = "DELETE FROM TB_CITY WHERE ID = " + cityId;
+            statement.executeUpdate(deleteQuery);
         }
     }
 }
