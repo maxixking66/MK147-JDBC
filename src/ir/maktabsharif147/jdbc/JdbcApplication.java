@@ -2,10 +2,10 @@ package ir.maktabsharif147.jdbc;
 
 import ir.maktabsharif147.jdbc.domains.City;
 import ir.maktabsharif147.jdbc.repositories.CityRepositoryImpl;
+import ir.maktabsharif147.jdbc.utils.ApplicationContext;
 import ir.maktabsharif147.jdbc.utils.ApplicationProperties;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -16,22 +16,25 @@ public class JdbcApplication {
 //    CRUD
 
     static void main() throws SQLException {
-        try (Connection connection = DriverManager.getConnection(ApplicationProperties.DATASOURCE_URL, ApplicationProperties.DATASOURCE_USER, ApplicationProperties.DATASOURCE_PASSWORD)) {
-            System.out.println("connected to database");
 
-            executeDll(connection);
+        ApplicationContext context = ApplicationContext.getInstance();
 
-            CityRepositoryImpl cityRepository = new CityRepositoryImpl(connection);
-            City byId = cityRepository.findById(1L);
-            if (Objects.nonNull(byId)) {
-                System.out.println(byId);
-            }
+        Connection connection = context.getConnection();
 
-            List<City> cityList = cityRepository.findAll();
-            if (Objects.nonNull(cityList) && !cityList.isEmpty()) {
-                for (City city : cityList) {
-                    System.out.println(city);
-                }
+        System.out.println("connected to database");
+
+        executeDll(connection);
+
+        CityRepositoryImpl cityRepository = context.getCityRepository();
+        City byId = cityRepository.findById(1L);
+        if (Objects.nonNull(byId)) {
+            System.out.println(byId);
+        }
+
+        List<City> cityList = cityRepository.findAll();
+        if (Objects.nonNull(cityList) && !cityList.isEmpty()) {
+            for (City city : cityList) {
+                System.out.println(city);
             }
         }
     }
