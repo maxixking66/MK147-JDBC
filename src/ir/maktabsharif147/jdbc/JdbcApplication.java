@@ -1,8 +1,7 @@
 package ir.maktabsharif147.jdbc;
 
-import ir.maktabsharif147.jdbc.domains.City;
-import ir.maktabsharif147.jdbc.repositories.CityRepositoryImpl;
-import ir.maktabsharif147.jdbc.repositories.WalletRepositoryImpl;
+import ir.maktabsharif147.jdbc.domains.BaseDomain;
+import ir.maktabsharif147.jdbc.repositories.CityRepository;
 import ir.maktabsharif147.jdbc.utils.ApplicationContext;
 import ir.maktabsharif147.jdbc.utils.ApplicationProperties;
 
@@ -26,21 +25,16 @@ public class JdbcApplication {
 
         executeDll(connection);
 
-        CityRepositoryImpl cityRepository = context.getCityRepository();
-        City byId = cityRepository.findById(1L);
-        if (Objects.nonNull(byId)) {
-            System.out.println(byId);
-        }
+        CityRepository cityRepository = context.getCityRepository();
+        System.out.println(cityRepository.findById(1L));
 
-        List<City> cityList = cityRepository.findAll();
+        List<BaseDomain> cityList = cityRepository.findAll();
         if (Objects.nonNull(cityList) && !cityList.isEmpty()) {
-            for (City city : cityList) {
-                System.out.println(city);
+            for (BaseDomain baseDomain : cityList) {
+//                TODO cast
+                System.out.println(baseDomain);
             }
         }
-
-        WalletRepositoryImpl walletRepository = context.getWalletRepository();
-        System.out.println("wallet by id 10: " + walletRepository.findById(10L));
     }
 
     private static void executeDll(Connection connection) {

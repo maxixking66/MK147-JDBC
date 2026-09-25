@@ -2,6 +2,8 @@ package ir.maktabsharif147.jdbc.domains;
 
 public class Wallet extends BaseDomain {
 
+    public static final String TABLE_NAME = "tb_wallet";
+
     private Long cash;
     private Long credit;
 
