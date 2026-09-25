@@ -2,6 +2,7 @@ package ir.maktabsharif147.jdbc;
 
 import ir.maktabsharif147.jdbc.domains.City;
 import ir.maktabsharif147.jdbc.repositories.CityRepositoryImpl;
+import ir.maktabsharif147.jdbc.utils.ApplicationProperties;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,14 +16,11 @@ public class JdbcApplication {
 //    CRUD
 
     static void main() throws SQLException {
-        final String url = "jdbc:postgresql://localhost:5432/postgres";
-        final String user = "postgres";
-        final String password = "123456789";
-        final String schemaName = "mk_147_jdbc";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+        try (Connection connection = DriverManager.getConnection(ApplicationProperties.DATASOURCE_URL, ApplicationProperties.DATASOURCE_USER, ApplicationProperties.DATASOURCE_PASSWORD)) {
             System.out.println("connected to database");
-            createSchema(connection, schemaName);
+
+            executeDll(connection);
+
             CityRepositoryImpl cityRepository = new CityRepositoryImpl(connection);
             City byId = cityRepository.findById(1L);
             if (Objects.nonNull(byId)) {
@@ -38,11 +36,50 @@ public class JdbcApplication {
         }
     }
 
-    private static void createSchema(Connection connection, String schemaName) throws SQLException {
+    private static void executeDll(Connection connection) {
+        createSchema(connection, ApplicationProperties.DATASOURCE_SCHEMA_NAME);
+        createCityTable(connection);
+        createWalletTable(connection);
+    }
+
+    private static void createSchema(Connection connection, String schemaName) {
         try (Statement statement = connection.createStatement()) {
             String query = "CREATE SCHEMA IF NOT EXISTS " + schemaName;
             statement.execute(query);
+            connection.setSchema(schemaName);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
-        connection.setSchema(schemaName);
+    }
+
+    private static void createCityTable(Connection connection) {
+        String ddl = """
+                CREATE TABLE IF NOT EXISTS TB_CITY (
+                    ID BIGINT PRIMARY KEY,
+                    NAME VARCHAR(100) NOT NULL
+                )
+                """;
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(ddl);
+            System.out.println("Table 'City' created (or already exists)");
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static void createWalletTable(Connection connection) {
+        String ddl = """
+                CREATE TABLE IF NOT EXISTS TB_WALLET (
+                    ID BIGINT PRIMARY KEY,
+                    CASH BIGINT NOT NULL,
+                    CREDIT BIGINT NOT NULL
+                )
+                """;
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(ddl);
+            System.out.println("Table 'Wallet' created (or already exists)");
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
