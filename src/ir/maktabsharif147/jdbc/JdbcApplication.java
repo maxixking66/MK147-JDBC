@@ -2,6 +2,7 @@ package ir.maktabsharif147.jdbc;
 
 import ir.maktabsharif147.jdbc.domains.City;
 import ir.maktabsharif147.jdbc.repositories.CityRepositoryImpl;
+import ir.maktabsharif147.jdbc.repositories.WalletRepositoryImpl;
 import ir.maktabsharif147.jdbc.utils.ApplicationContext;
 import ir.maktabsharif147.jdbc.utils.ApplicationProperties;
 
@@ -37,6 +38,9 @@ public class JdbcApplication {
                 System.out.println(city);
             }
         }
+
+        WalletRepositoryImpl walletRepository = context.getWalletRepository();
+        System.out.println("wallet by id 10: " + walletRepository.findById(10L));
     }
 
     private static void executeDll(Connection connection) {

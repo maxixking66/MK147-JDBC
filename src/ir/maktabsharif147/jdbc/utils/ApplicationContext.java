@@ -1,6 +1,7 @@
 package ir.maktabsharif147.jdbc.utils;
 
 import ir.maktabsharif147.jdbc.repositories.CityRepositoryImpl;
+import ir.maktabsharif147.jdbc.repositories.WalletRepositoryImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +23,7 @@ public class ApplicationContext {
     private Connection connection;
 
     private CityRepositoryImpl cityRepository;
+    private WalletRepositoryImpl walletRepository;
 
     public Connection getConnection() {
         if (Objects.isNull(connection)) {
@@ -41,5 +43,14 @@ public class ApplicationContext {
             );
         }
         return cityRepository;
+    }
+
+    public WalletRepositoryImpl getWalletRepository() {
+        if (Objects.isNull(walletRepository)) {
+            this.walletRepository = new WalletRepositoryImpl(
+                    this.getConnection()
+            );
+        }
+        return walletRepository;
     }
 }
