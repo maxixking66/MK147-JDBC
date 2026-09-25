@@ -1,15 +1,12 @@
 package ir.maktabsharif147.jdbc;
 
-import ir.maktabsharif147.jdbc.domains.BaseDomain;
-import ir.maktabsharif147.jdbc.repositories.CityRepository;
+import ir.maktabsharif147.jdbc.domains.City;
 import ir.maktabsharif147.jdbc.utils.ApplicationContext;
 import ir.maktabsharif147.jdbc.utils.ApplicationProperties;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Objects;
 
 public class JdbcApplication {
 
@@ -21,20 +18,20 @@ public class JdbcApplication {
 
         Connection connection = context.getConnection();
 
-        System.out.println("connected to database");
-
         executeDll(connection);
 
-        CityRepository cityRepository = context.getCityRepository();
-        System.out.println(cityRepository.findById(1L));
+//        WalletRepository walletRepository = context.getWalletRepository();
+//
+//        Wallet wallet = new Wallet();
+//        wallet.setId(2L);
+//        wallet.setCash(20000L);
+//        wallet.setCredit(25000L);
+//        walletRepository.insert(wallet);
 
-        List<BaseDomain> cityList = cityRepository.findAll();
-        if (Objects.nonNull(cityList) && !cityList.isEmpty()) {
-            for (BaseDomain baseDomain : cityList) {
-//                TODO cast
-                System.out.println(baseDomain);
-            }
-        }
+        City city = new City();
+        city.setId(11L);
+        city.setName("کرمان");
+        context.getCityRepository().insert(city);
     }
 
     private static void executeDll(Connection connection) {

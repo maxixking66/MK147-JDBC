@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BaseRepository {
 
-//    BaseDomain insert(BaseDomain baseDomain);
+    BaseDomain insert(BaseDomain baseDomain);
 
 //    BaseDomain update(BaseDomain baseDomain);
 

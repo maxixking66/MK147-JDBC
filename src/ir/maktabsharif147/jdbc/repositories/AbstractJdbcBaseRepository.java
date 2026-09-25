@@ -18,6 +18,35 @@ public abstract class AbstractJdbcBaseRepository implements BaseRepository {
     }
 
     @Override
+    public BaseDomain insert(BaseDomain baseDomain) {
+        String sql = getInsertSqlQuery();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            fillInsertQueryParams(statement, baseDomain);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return baseDomain;
+    }
+
+    private String getInsertSqlQuery() {
+        return "insert into " + getTableName() + " values (" + getInsertParamString() + ")";
+    }
+
+    protected abstract String getInsertParamString();
+
+    protected void fillInsertQueryParams(PreparedStatement statement, BaseDomain baseDomain) {
+        try {
+            statement.setLong(1, baseDomain.getId());
+            fillInsertQuerySpecificParams(statement, baseDomain);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected abstract void fillInsertQuerySpecificParams(PreparedStatement statement, BaseDomain baseDomain);
+
+    @Override
     public BaseDomain findById(Long id) {
         BaseDomain entity = null;
         String sql = "select * from " + getTableName() + " where id = ?";
