@@ -1,18 +1,9 @@
 package ir.maktabsharif147.jdbc.domains;
 
-public class Wallet {
+public class Wallet extends BaseDomain {
 
-    private Long id;
     private Long cash;
     private Long credit;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getCash() {
         return cash;
@@ -33,7 +24,7 @@ public class Wallet {
     @Override
     public String toString() {
         return "Wallet{" +
-               "id=" + id +
+               "id=" + getId() +
                ", cash=" + cash +
                ", credit=" + credit +
                '}';
