@@ -1,14 +1,14 @@
 package ir.maktabsharif147.jdbc.domains;
 
-public abstract class BaseDomain {
+public abstract class BaseDomain<ID extends Number> {
 
-    private Long id;
+    private ID id;
 
-    public Long getId() {
+    public ID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ID id) {
         this.id = id;
     }
 }

@@ -4,19 +4,19 @@ import ir.maktabsharif147.jdbc.domains.BaseDomain;
 
 import java.util.List;
 
-public interface BaseRepository {
+public interface BaseRepository<E extends BaseDomain<ID>, ID extends Number> {
 
-    BaseDomain insert(BaseDomain baseDomain);
+    E insert(E baseDomain);
 
-//    BaseDomain update(BaseDomain baseDomain);
+//    E update(E baseDomain);
 
-    BaseDomain findById(Long id);
+    E findById(ID id);
 
-    List<BaseDomain> findAll();
+    List<E> findAll();
 
 //    long count();
 
-//    void deleteById(Long id);
+//    void deleteById(ID id);
 
-//    boolean existsById(Long id);
+//    boolean existsById(ID id);
 }

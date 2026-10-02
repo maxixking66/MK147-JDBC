@@ -1,6 +1,6 @@
 package ir.maktabsharif147.jdbc.domains;
 
-public class Wallet extends BaseDomain {
+public class Wallet extends BaseDomain<Long> {
 
     public static final String TABLE_NAME = "tb_wallet";
 

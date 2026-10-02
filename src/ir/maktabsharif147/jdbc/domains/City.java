@@ -1,6 +1,6 @@
 package ir.maktabsharif147.jdbc.domains;
 
-public class City extends BaseDomain {
+public class City extends BaseDomain<Integer> {
 
     public static final String TABLE_NAME = "TB_CITY";
 

@@ -1,6 +1,5 @@
 package ir.maktabsharif147.jdbc.repositories;
 
-import ir.maktabsharif147.jdbc.domains.BaseDomain;
 import ir.maktabsharif147.jdbc.domains.Wallet;
 
 import java.sql.Connection;
@@ -11,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 //   CURD Wallet
-public class WalletJdbcRepositoryImpl extends AbstractJdbcBaseRepository implements WalletRepository {
+public class WalletJdbcRepositoryImpl extends AbstractJdbcBaseRepository<Wallet, Long>
+        implements WalletRepository {
 
     public WalletJdbcRepositoryImpl(Connection connection) {
         super(connection);
@@ -23,10 +23,10 @@ public class WalletJdbcRepositoryImpl extends AbstractJdbcBaseRepository impleme
     }
 
     @Override
-    protected void fillInsertQuerySpecificParams(PreparedStatement statement, BaseDomain baseDomain) {
+    protected void fillInsertQuerySpecificParams(PreparedStatement statement, Wallet baseDomain) {
         try {
-            statement.setLong(2, ((Wallet) baseDomain).getCash());
-            statement.setLong(3, ((Wallet) baseDomain).getCredit());
+            statement.setLong(2, baseDomain.getCash());
+            statement.setLong(3, baseDomain.getCredit());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -66,5 +66,14 @@ public class WalletJdbcRepositoryImpl extends AbstractJdbcBaseRepository impleme
             throw new RuntimeException(e);
         }
         return walletList;
+    }
+
+    @Override
+    protected void fillIdAndFirstIndex(PreparedStatement statement, Long id) {
+        try {
+            statement.setLong(1, id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
